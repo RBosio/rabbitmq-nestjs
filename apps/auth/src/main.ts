@@ -1,15 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';
 import { MicroserviceOptions } from '@nestjs/microservices';
-import { CommonService } from '@app/common';
+import { RmqService } from '@app/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
 
-  const commonService = app.get(CommonService);
+  const rmqService = app.get<RmqService>(RmqService);
 
   app.connectMicroservice<MicroserviceOptions>(
-    commonService.getRMQOptions('AUTH_QUEUE'),
+    rmqService.getRMQOptions('AUTH'),
   );
 
   app.startAllMicroservices();

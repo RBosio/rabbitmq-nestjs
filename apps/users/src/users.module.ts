@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { CommonService } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
+import { RmqModule } from '@app/common';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    RmqModule,
   ],
   controllers: [UsersController],
-  providers: [UsersService, CommonService],
+  providers: [UsersService],
 })
 export class UsersModule {}
