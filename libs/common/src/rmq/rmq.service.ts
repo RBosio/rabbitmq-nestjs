@@ -3,18 +3,16 @@ import { ConfigService } from '@nestjs/config';
 import { RmqOptions, Transport } from '@nestjs/microservices';
 
 @Injectable()
-export class CommonService {
+export class RmqService {
   constructor(private configService: ConfigService) {}
 
-  getRMQOptions(queue: string): RmqOptions {
+  getRMQOptions(queue: string, noAck = false): RmqOptions {
     return {
       transport: Transport.RMQ,
       options: {
-        urls: [
-          `amqp://${this.configService.get('RABBITMQ_DEFAULT_USER')}:${this.configService.get('RABBITMQ_DEFAULT_PASS')}@rabbitmq:5672`,
-        ],
-        queue,
-        noAck: false,
+        urls: [this.configService.get<string>('RABBIT_MQ_URI')],
+        queue: this.configService.get<string>(`RABBIT_MQ_${queue}_QUEUE`),
+        noAck,
         queueOptions: {
           durable: true,
         },
