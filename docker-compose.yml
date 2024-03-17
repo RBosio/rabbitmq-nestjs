@@ -1,0 +1,84 @@
+version: '3'
+
+services:
+  api-gateway:
+    container_name: api-gateway
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
+    command: npm run start:dev
+    depends_on:
+      - auth-microservice
+      - users-microservice
+      - posts-microservice
+      - rabbitmq
+      - mysql
+
+  auth-microservice:
+    container_name: auth-microservice
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+    volumes:
+      - .:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
+    command: npm run start:dev auth
+    depends_on:
+      - rabbitmq
+      - mysql
+
+  users-microservice:
+    container_name: users-microservice
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./apps/users/Dockerfile
+    volumes:
+      - .:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
+    command: npm run start:dev users
+    depends_on:
+      - rabbitmq
+      - mysql
+
+  posts-microservice:
+    container_name: posts-microservice
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./apps/posts/Dockerfile
+    volumes:
+      - .:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
+    command: npm run start:dev posts
+    depends_on:
+      - rabbitmq
+      - mysql
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.12-management
+    env_file:
+      - .env
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+  mysql:
+    container_name: mysql
+    image: mysql:8.3
+    env_file:
+      - .env
+    ports:
+      - '3306:3306'
