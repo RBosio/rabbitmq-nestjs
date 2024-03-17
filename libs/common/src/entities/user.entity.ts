@@ -1,5 +1,6 @@
-import { Column, DeleteDateColumn, Entity } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
+import { Post } from './post.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -14,4 +15,7 @@ export class User extends BaseEntity {
 
   @DeleteDateColumn()
   deleted_at: Date;
+
+  @OneToMany(() => Post, (posts) => posts.user)
+  posts: Post[];
 }
