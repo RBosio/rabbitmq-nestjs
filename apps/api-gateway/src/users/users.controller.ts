@@ -7,12 +7,15 @@ import {
   NotFoundException,
   Param,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { USER_SERVICE } from '../constants/services';
 import { ClientRMQ } from '@nestjs/microservices';
 import { catchError, of } from 'rxjs';
 import { UpdateUserDto } from '@app/common';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('user')
 export class UsersController {
   constructor(@Inject(USER_SERVICE) private userClient: ClientRMQ) {}
