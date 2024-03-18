@@ -4,6 +4,7 @@ import {
   UpdateResult,
   Repository,
   FindManyOptions,
+  FindOptionsRelations,
 } from 'typeorm';
 import { BaseRepositoryInterface } from './base.interface';
 
@@ -23,11 +24,12 @@ export abstract class BaseRepository<T extends HasId>
     return this.entity.find(options);
   }
 
-  findOneById(id: any): Promise<T> {
+  findOneById(id: any, relations?: FindOptionsRelations<T>): Promise<T> {
     return this.entity.findOne({
       where: {
         id,
       },
+      relations,
     });
   }
 
