@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, Post } from '@nestjs/common';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { ConfigModule } from '@nestjs/config';
-import { RmqModule } from '@app/common';
+import { DatabaseModule, PostRepository, RmqModule } from '@app/common';
 import * as Joi from 'joi';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -15,8 +16,10 @@ import * as Joi from 'joi';
       }),
     }),
     RmqModule,
+    DatabaseModule,
+    TypeOrmModule.forFeature([Post]),
   ],
   controllers: [PostsController],
-  providers: [PostsService],
+  providers: [PostsService, PostRepository],
 })
 export class PostsModule {}

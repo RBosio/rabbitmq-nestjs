@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { ConfigModule } from '@nestjs/config';
-import { RmqModule } from '@app/common';
+import { DatabaseModule, RmqModule, UserRepository } from '@app/common';
 import * as Joi from 'joi';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '@app/common/entities/user.entity';
 
 @Module({
   imports: [
@@ -15,8 +17,10 @@ import * as Joi from 'joi';
       }),
     }),
     RmqModule,
+    DatabaseModule,
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, UserRepository],
 })
 export class UsersModule {}
