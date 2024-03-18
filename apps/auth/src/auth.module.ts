@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { DatabaseModule, RmqModule } from '@app/common';
-import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule, RmqModule, User, UserRepository } from '@app/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { USER_SERVICE } from 'apps/api-gateway/src/constants/services';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -13,12 +16,23 @@ import * as Joi from 'joi';
         MYSQL_URI: Joi.string().required(),
         RABBIT_MQ_URI: Joi.string().required(),
         RABBIT_MQ_AUTH_QUEUE: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
       }),
     }),
     DatabaseModule,
-    RmqModule,
+    TypeOrmModule.forFeature([User]),
+    RmqModule.register({ name: USER_SERVICE }),
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: '24h',
+        },
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, UserRepository],
 })
 export class AuthModule {}
