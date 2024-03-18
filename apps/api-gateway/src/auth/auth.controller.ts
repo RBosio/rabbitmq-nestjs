@@ -55,4 +55,10 @@ export class AuthController {
     response.cookie('token', token);
     response.status(HttpStatus.OK).json({ token });
   }
+
+  @Post('logout')
+  async logout(@Res() response: Response) {
+    response.clearCookie('token');
+    response.status(HttpStatus.OK).json('logout');
+  }
 }
