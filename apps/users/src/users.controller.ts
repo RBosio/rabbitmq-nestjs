@@ -27,6 +27,12 @@ export class UsersController {
     return this.usersService.findUser(id);
   }
 
+  @MessagePattern({ cmd: 'findUserByEmail' })
+  findUserByEmail(@Ctx() context: RmqContext, @Payload() email: string) {
+    this.rmqService.acknowledgmentMessage(context);
+    return this.usersService.findUserByEmail(email);
+  }
+
   @MessagePattern({ cmd: 'updateUser' })
   updateUser(
     @Ctx() context: RmqContext,
