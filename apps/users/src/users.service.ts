@@ -28,6 +28,17 @@ export class UsersService {
     return userFounded;
   }
 
+  async findUserByEmail(email: string): Promise<User> {
+    const userFounded = await this.userRepository.findOneByOptions({
+      where: {
+        email,
+      },
+    });
+    if (!userFounded) return null;
+
+    return userFounded;
+  }
+
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const userFounded = await this.findUser(id);
 
