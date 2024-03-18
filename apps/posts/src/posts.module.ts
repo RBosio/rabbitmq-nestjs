@@ -1,10 +1,11 @@
-import { Module, Post } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule, PostRepository, RmqModule } from '@app/common';
+import { DatabaseModule, Post, PostRepository, RmqModule } from '@app/common';
 import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { USER_SERVICE } from 'apps/api-gateway/src/constants/services';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         RABBIT_MQ_POST_QUEUE: Joi.string().required(),
       }),
     }),
-    RmqModule,
+    RmqModule.register({ name: USER_SERVICE }),
     DatabaseModule,
     TypeOrmModule.forFeature([Post]),
   ],

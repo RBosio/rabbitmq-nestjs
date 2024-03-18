@@ -16,7 +16,7 @@ export class UsersController {
   ) {}
 
   @MessagePattern({ cmd: 'findUsers' })
-  findUsers(@Ctx() context: RmqContext, @Payload() data: any) {
+  findUsers(@Ctx() context: RmqContext) {
     this.rmqService.acknowledgmentMessage(context);
     return this.usersService.findUsers();
   }
@@ -33,13 +33,13 @@ export class UsersController {
     @Payload() data: { userId: number; updateUserDto: UpdateUserDto },
   ) {
     this.rmqService.acknowledgmentMessage(context);
-    return this.usersService.update(data.userId, data.updateUserDto);
+    return this.usersService.updateUser(data.userId, data.updateUserDto);
   }
 
   @MessagePattern({ cmd: 'deleteUser' })
   deleteUser(@Ctx() context: RmqContext, @Payload() id: number) {
     this.rmqService.acknowledgmentMessage(context);
 
-    return this.usersService.delete(id);
+    return this.usersService.deleteUser(id);
   }
 }

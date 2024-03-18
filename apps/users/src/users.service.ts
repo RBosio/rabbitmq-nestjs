@@ -8,11 +8,17 @@ export class UsersService {
   constructor(private userRepository: UserRepository) {}
 
   async findUsers(): Promise<User[]> {
-    return this.userRepository.findAll();
+    return this.userRepository.findAll({
+      relations: {
+        posts: true,
+      },
+    });
   }
 
   async findUser(id: number): Promise<User> {
-    const userFounded = await this.userRepository.findOneById(id);
+    const userFounded = await this.userRepository.findOneById(id, {
+      posts: true,
+    });
     if (!userFounded)
       throw new RpcException({
         message: 'user not found',
@@ -22,7 +28,7 @@ export class UsersService {
     return userFounded;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const userFounded = await this.findUser(id);
 
     const userUpdated = Object.assign(userFounded, updateUserDto);
@@ -30,7 +36,7 @@ export class UsersService {
     return this.userRepository.save(userUpdated);
   }
 
-  async delete(id: number): Promise<User> {
+  async deleteUser(id: number): Promise<User> {
     const userFounded = await this.findUser(id);
     await this.userRepository.delete(id);
 
