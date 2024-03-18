@@ -22,15 +22,6 @@ import { JwtModule } from '@nestjs/jwt';
     DatabaseModule,
     TypeOrmModule.forFeature([User]),
     RmqModule.register({ name: USER_SERVICE }),
-    JwtModule.registerAsync({
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: {
-          expiresIn: '24h',
-        },
-      }),
-      inject: [ConfigService],
-    }),
   ],
   controllers: [AuthController],
   providers: [AuthService, UserRepository],

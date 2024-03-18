@@ -37,7 +37,7 @@ export class AuthController {
   async login(
     @Ctx() context: RmqContext,
     @Payload() loginUserDto: LoginUserDto,
-  ): Promise<{ token: string }> {
+  ): Promise<User> {
     this.rmqService.acknowledgmentMessage(context);
 
     const userFounded = await lastValueFrom(

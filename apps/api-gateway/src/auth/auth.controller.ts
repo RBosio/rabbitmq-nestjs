@@ -14,10 +14,14 @@ import { CreateUserDto } from '@app/common';
 import { catchError, lastValueFrom, of } from 'rxjs';
 import { LoginUserDto } from '@app/common';
 import { Response } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject(AUTH_SERVICE) private authClient: ClientRMQ) {}
+  constructor(
+    @Inject(AUTH_SERVICE) private authClient: ClientRMQ,
+    private jwtService: JwtService,
+  ) {}
 
   @Post('register')
   register(@Body() createUserDto: CreateUserDto) {
@@ -34,7 +38,7 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto, @Res() response: Response) {
-    const res = await lastValueFrom(
+    const user = await lastValueFrom(
       this.authClient.send({ cmd: 'loginUser' }, loginUserDto).pipe(
         catchError((val) => {
           if (val.status === 401) {
@@ -46,7 +50,9 @@ export class AuthController {
       ),
     );
 
-    response.cookie('token', res.token);
-    response.status(HttpStatus.OK).json(res);
+    const token = await this.jwtService.signAsync({ sub: user.id });
+
+    response.cookie('token', token);
+    response.status(HttpStatus.OK).json({ token });
   }
 }
