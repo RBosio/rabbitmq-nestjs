@@ -8,12 +8,15 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { POST_SERVICE } from '../constants/services';
 import { ClientRMQ } from '@nestjs/microservices';
 import { catchError, of } from 'rxjs';
 import { CreatePostDto, UpdatePostDto } from '@app/common';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('post')
 export class PostsController {
   constructor(@Inject(POST_SERVICE) private postClient: ClientRMQ) {}
