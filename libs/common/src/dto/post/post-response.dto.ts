@@ -5,4 +5,5 @@ export class PostResponseDto {
   title: string;
   description: string;
   user: UserResponseDto;
+  deleted_at: Date;
 }

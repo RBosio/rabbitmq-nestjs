@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { User } from './user.entity';
 
