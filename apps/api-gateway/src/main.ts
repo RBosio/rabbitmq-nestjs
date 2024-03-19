@@ -11,6 +11,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
+    .addCookieAuth('token')
     .setTitle('Microservices with RabbitMQ example')
     .setVersion('1.0')
     .build();
