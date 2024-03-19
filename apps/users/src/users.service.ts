@@ -25,6 +25,8 @@ export class UsersService {
         status: HttpStatus.NOT_FOUND,
       });
 
+    delete userFounded.password;
+
     return userFounded;
   }
 
